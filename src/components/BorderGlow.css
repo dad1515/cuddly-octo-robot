@@ -1,0 +1,143 @@
+@property --edge-proximity {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --cursor-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 45deg;
+}
+
+.border-glow-card {
+  --edge-proximity: 0;
+  --cursor-angle: 45deg;
+  --edge-sensitivity: 30;
+  --color-sensitivity: calc(var(--edge-sensitivity) + 20);
+  --border-radius: 0px;
+  --glow-padding: 32px;
+  --cone-spread: 22;
+  position: relative;
+  display: grid;
+  isolation: isolate;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: var(--border-radius);
+  background: var(--card-bg);
+  transform: translate3d(0, 0, .01px);
+}
+
+.border-glow-card:focus-within {
+  --edge-proximity: 100;
+  --cursor-angle: 315deg;
+}
+
+.border-glow-card::before,
+.border-glow-card::after,
+.border-glow-card > .border-glow-card__edge {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transition: opacity .25s ease-out;
+  pointer-events: none;
+}
+
+.border-glow-card:not(:hover):not(:focus-within):not(.border-glow-card--intro)::before,
+.border-glow-card:not(:hover):not(:focus-within):not(.border-glow-card--intro)::after,
+.border-glow-card:not(:hover):not(:focus-within):not(.border-glow-card--intro) > .border-glow-card__edge {
+  opacity: 0;
+  transition-duration: .65s;
+}
+
+.border-glow-card::before {
+  z-index: 2;
+  border: 1px solid transparent;
+  background: conic-gradient(
+    from var(--cursor-angle) at center,
+    transparent 0 29%,
+    var(--border-color-one) 42%,
+    var(--border-color-two) 50%,
+    var(--border-color-three) 58%,
+    transparent 71% 100%
+  ) border-box;
+  opacity: calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.border-glow-card::after {
+  z-index: 0;
+  border: 1px solid transparent;
+  background:
+    var(--gradient-one) padding-box,
+    var(--gradient-two) padding-box,
+    var(--gradient-three) padding-box,
+    var(--gradient-four) padding-box,
+    var(--gradient-five) padding-box,
+    var(--gradient-six) padding-box,
+    var(--gradient-seven) padding-box;
+  opacity: calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(ellipse at 50% 50%, transparent 36%, #000 76%);
+}
+
+.border-glow-card > .border-glow-card__edge {
+  z-index: 3;
+  inset: calc(var(--glow-padding) * -1);
+  opacity: calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+  mix-blend-mode: plus-lighter;
+  mask-image: conic-gradient(from var(--cursor-angle) at center, #000 2.5%, transparent 10%, transparent 90%, #000 97.5%);
+}
+
+.border-glow-card > .border-glow-card__edge::before {
+  content: '';
+  position: absolute;
+  inset: var(--glow-padding);
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--glow-color),
+    inset 0 0 6px var(--glow-color-40),
+    inset 0 0 20px var(--glow-color-20),
+    0 0 3px var(--glow-color-50),
+    0 0 12px var(--glow-color-30),
+    0 0 34px var(--glow-color-10);
+}
+
+.border-glow-card__inner {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.border-glow-card--intro {
+  animation: border-glow-intro 2.1s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.border-glow-card--intro::before,
+.border-glow-card--intro::after,
+.border-glow-card--intro > .border-glow-card__edge {
+  animation: border-glow-visibility 2.1s ease both;
+}
+
+@keyframes border-glow-intro {
+  0% { --edge-proximity: 0; --cursor-angle: 110deg; }
+  25% { --edge-proximity: 100; }
+  72% { --edge-proximity: 82; --cursor-angle: 410deg; }
+  100% { --edge-proximity: 0; --cursor-angle: 465deg; }
+}
+
+@keyframes border-glow-visibility {
+  0%, 100% { opacity: 0; }
+  24%, 72% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .border-glow-card,
+  .border-glow-card::before,
+  .border-glow-card::after,
+  .border-glow-card > .border-glow-card__edge { animation: none; transition: none; }
+}

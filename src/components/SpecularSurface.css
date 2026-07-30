@@ -1,0 +1,42 @@
+.specular-surface {
+  --specular-x: 50%;
+  --specular-y: 50%;
+  --specular-opacity: 0;
+  position: relative;
+  isolation: isolate;
+}
+
+.specular-surface::before {
+  content: '';
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(var(--specular-opacity) * .42);
+  background: radial-gradient(420px circle at var(--specular-x) var(--specular-y), rgba(233, 255, 193, .18), transparent 58%);
+  transition: opacity .24s ease;
+}
+
+.specular-surface__effect {
+  position: absolute;
+  z-index: 5;
+  inset: -18px;
+  pointer-events: none;
+}
+
+.specular-surface__effect canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.specular-surface--fallback {
+  box-shadow: inset 0 0 0 1px rgba(186, 255, 40, .32);
+}
+
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .specular-surface::before,
+  .specular-surface__effect {
+    display: none;
+  }
+}

@@ -1,0 +1,33 @@
+.curved-input {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  margin: 0;
+  filter: drop-shadow(var(--curved-shadow));
+}
+
+.curved-input__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  cursor: text;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.curved-input__svg text { font-family: inherit; }
+.curved-input__focus-ring { opacity: 0; transition: opacity .25s ease; }
+.curved-input--focused .curved-input__focus-ring { opacity: .24; }
+.curved-input__button { cursor: pointer; outline: none; }
+.curved-input__button-fill { transition: filter .2s ease; }
+.curved-input__button:hover ~ .curved-input__button-fill { filter: brightness(1.08); }
+.curved-input__icon { pointer-events: none; }
+.curved-input__text { font-weight: 540; letter-spacing: 0; pointer-events: none; }
+.curved-input__caret { animation: curved-caret 1.05s steps(1) infinite; pointer-events: none; }
+.curved-input__field { position: absolute; left: 0; top: 0; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
+@keyframes curved-caret { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .curved-input__caret { animation: none; }
+}
